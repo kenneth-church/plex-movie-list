@@ -52,5 +52,5 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          - body: ${{ steps.extract-changelog.outputs.markdown }}
-          - generate_release_notes: true
+          body: ${{ steps.extract-changelog.outputs.markdown }}
+          generate_release_notes: true

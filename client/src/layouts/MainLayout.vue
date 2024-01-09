@@ -5,7 +5,7 @@
         <Suspense>
           <router-view />
           <template #fallback>
-            <q-skeleton height="90vh" class="col-12 col-md-8" />
+            <q-skeleton height="75vh" class="col-12 col-md-8" />
           </template>
         </Suspense>
       </q-page>

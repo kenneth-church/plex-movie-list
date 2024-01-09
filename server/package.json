@@ -19,6 +19,7 @@
     "dotenv": "^16.3.1",
     "fast-xml-parser": "^4.3.2",
     "fastify": "^4.25.2",
-    "fastify-plugin": "^4.5.1"
+    "fastify-plugin": "^4.5.1",
+    "is-url-http": "^2.3.7"
   }
 }

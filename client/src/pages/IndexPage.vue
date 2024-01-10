@@ -80,6 +80,8 @@
 import { mdiArrowUpThin, mdiArrowDownThin } from '@quasar/extras/mdi-v7';
 
 import { ref, computed } from 'vue';
+import { useLocalStorage } from '@vueuse/core';
+
 import { baseURL, api } from 'boot/axios';
 
 interface VideoData {
@@ -99,7 +101,10 @@ const sortOptions: { label: string; value: keyof VideoData }[] = [
   { label: 'Date Added', value: 'addedAt' },
 ];
 
-const sort = ref<(typeof sortOptions)[number]>(sortOptions[0]);
+const sort = useLocalStorage<(typeof sortOptions)[number]>(
+  'sort',
+  sortOptions[0],
+);
 const sortAsc = ref(false);
 const search = ref('');
 

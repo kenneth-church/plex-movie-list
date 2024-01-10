@@ -1,5 +1,5 @@
 <template>
-  <q-card unelevated bordered class="col-12 col-md-6">
+  <q-card unelevated bordered class="col-12 col-sm-10 col-md-8">
     <template v-if="'error' in movies">
       <q-card-section class="text-center">
         <div>Error:</div>

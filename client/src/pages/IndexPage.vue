@@ -1,9 +1,9 @@
 <template>
   <q-card unelevated bordered class="col-12 col-sm-10 col-md-8">
-    <template v-if="'error' in movies">
+    <template v-if="'error' in data">
       <q-card-section class="text-center">
         <div>Error:</div>
-        <div>{{ movies.error }}</div>
+        <div>{{ data.error }}</div>
       </q-card-section>
     </template>
 
@@ -39,7 +39,7 @@
       </q-card-section>
       <q-separator />
       <q-list separator>
-        <q-expansion-item v-for="movie in computedMovies" :key="movie.key">
+        <q-expansion-item v-for="movie in movies" :key="movie.key">
           <template v-slot:header>
             <q-item-section class="text-h6">{{ movie.title }}</q-item-section>
             <q-chip :ripple="false" outline class="q-my-auto">
@@ -57,7 +57,7 @@
             </div>
             <div class="col">
               <div>{{ movie.summary }}</div>
-              <div class="q-mt-sm">
+              <div class="row items-center q-mt-sm">
                 <q-chip
                   :ripple="false"
                   v-for="res in movie.resolutions"
@@ -67,6 +67,14 @@
                 >
                   {{ res === '4k' ? 'UHD' : 'HD' }}
                 </q-chip>
+                <q-space />
+                <q-btn
+                  dense
+                  flat
+                  no-caps
+                  label="Open on Plex"
+                  :href="`https://app.plex.tv/desktop/#!/server/${data.serverID}/details?key=%2Flibrary%2Fmetadata%2F${movie.key}`"
+                />
               </div>
             </div>
           </div>
@@ -94,7 +102,9 @@ interface VideoData {
   addedAt: string;
 }
 
-const movies = ref<VideoData[] | { error: string }>((await api.get('')).data);
+type Data = { videos: VideoData[]; serverID: string; error?: string };
+
+const data = ref<Data>((await api.get('')).data);
 
 const sortOptions: { label: string; value: keyof VideoData }[] = [
   { label: 'Title', value: 'titleSort' },
@@ -108,12 +118,12 @@ const sort = useLocalStorage<(typeof sortOptions)[number]>(
 const sortAsc = ref(false);
 const search = ref('');
 
-const computedMovies = computed(() => {
-  if (!('error' in movies.value)) {
-    let sortArr = movies.value;
+const movies = computed(() => {
+  if (!('error' in data.value)) {
+    let sortArr = data.value.videos;
 
     if (search.value !== '') {
-      sortArr = movies.value.filter((movie) => {
+      sortArr = data.value.videos.filter((movie) => {
         return (
           movie.title.toLowerCase().indexOf(search.value.toLowerCase()) >= 0
         );

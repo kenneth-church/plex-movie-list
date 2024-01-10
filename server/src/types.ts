@@ -1,6 +1,6 @@
 export interface Data {
   '?xml': XML;
-  MediaContainer: MediaContainer;
+  MediaContainer: MediaContainer | IDMediaContainer;
 }
 
 export interface XML {
@@ -24,6 +24,13 @@ export interface MediaContainer {
   title2: string;
   viewGroup: ViewGroup;
   viewMode: string;
+}
+
+export interface IDMediaContainer {
+  size: string;
+  claimed: string;
+  machineIdentifier: string;
+  version: string;
 }
 
 export interface Video {

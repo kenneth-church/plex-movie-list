@@ -6,7 +6,7 @@ import proxy from '@fastify/http-proxy';
 import path from 'path';
 import isUrlHttp from 'is-url-http';
 
-import { Data } from './types';
+import type { Data, MediaContainer, IDMediaContainer } from './types';
 
 interface VideoData {
   title: string;
@@ -42,7 +42,28 @@ fastify.register(serveStatic, {
 fastify.get('/api', async (request, reply) => {
   if (confValid) {
     let videos: VideoData[] = [];
-    let xml: string;
+    let idXML: string;
+    let libraryXML: string;
+
+    try {
+      const resp = await fetch(`${plexURL}/identity`);
+
+      if (resp.status !== 200) throw resp.statusText;
+
+      idXML = await resp.text();
+    } catch (err) {
+      console.log(`Error retrieving data from Plex: ${err}`);
+      return { error: err };
+    }
+
+    let parsedID: IDMediaContainer;
+    try {
+      parsedID = (parser.parse(idXML) as Data)
+        .MediaContainer as IDMediaContainer;
+    } catch (err) {
+      console.log(`Error parsing ID XML: ${err}`);
+      return { error: err };
+    }
 
     try {
       const resp = await fetch(
@@ -53,21 +74,22 @@ fastify.get('/api', async (request, reply) => {
       if (resp.status === 404)
         throw 'Plex returned 404: Likely due to an incorrect library ID';
 
-      xml = await resp.text();
+      libraryXML = await resp.text();
     } catch (err) {
       console.log(`Error retrieving data from Plex: ${err}`);
       return { error: err };
     }
 
-    let parsedXML: Data['MediaContainer'];
+    let parsedLibrary: MediaContainer;
     try {
-      parsedXML = (parser.parse(xml) as Data).MediaContainer;
+      parsedLibrary = (parser.parse(libraryXML) as Data)
+        .MediaContainer as MediaContainer;
     } catch (err) {
-      console.log(`Error parsing XML: ${err}`);
+      console.log(`Error parsing library XML: ${err}`);
       return { error: err };
     }
 
-    parsedXML.Video.forEach((val) => {
+    parsedLibrary.Video.forEach((val) => {
       let resolutions: string[] = [];
 
       try {
@@ -95,7 +117,7 @@ fastify.get('/api', async (request, reply) => {
       }
     });
 
-    return videos;
+    return { videos, serverID: parsedID.machineIdentifier };
   } else {
     return { error: 'App configuration is invalid' };
   }

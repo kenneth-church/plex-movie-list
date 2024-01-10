@@ -20,6 +20,7 @@
         <q-select
           standout
           dense
+          behavior="menu"
           v-model="sort"
           :options="sortOptions"
           label="Sort By"

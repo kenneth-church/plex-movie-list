@@ -1,4 +1,4 @@
-name: Build
+name: Build and Release
 
 on:
   push:
@@ -43,3 +43,20 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Get Changelog
+        id: extract-changelog
+        uses: sean0x42/markdown-extract@v2
+        with:
+          file: CHANGELOG.md
+          pattern: ${{  github.ref_name }}
+          no-print-matched-heading: true
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.extract-changelog.outputs.markdown }}
+          generate_release_notes: true

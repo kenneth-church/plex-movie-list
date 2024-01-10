@@ -22,6 +22,7 @@
           dense
           v-model="sort"
           :options="sortOptions"
+          label="Sort By"
           style="min-width: 9rem"
           class="col-auto"
         />

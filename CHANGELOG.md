@@ -1,3 +1,7 @@
+# v1.3.0
+
+This release adds a button that opens a movie on Plex.
+
 # v1.2.0
 
 This release makes a few ui adjustments and saves the sorting method to Local Storage.

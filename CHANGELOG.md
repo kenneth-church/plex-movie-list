@@ -1,3 +1,7 @@
+# v1.3.1
+
+This patch fixes the incorrect webpage title.
+
 # v1.3.0
 
 This release adds a button that opens a movie on Plex.

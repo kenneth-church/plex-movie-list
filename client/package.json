@@ -1,5 +1,6 @@
 {
   "name": "plex-movie-list",
+  "productName": "Plex Movie List",
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
